@@ -1,5 +1,22 @@
 # dsh-moss-background
 
+![status: work in progress](https://img.shields.io/badge/status-%E5%8D%8A%E6%88%90%E5%93%81%20%C2%B7%20WIP-orange)
+![tested on: Windows 11 · DSH 0.2.2-rc.1](https://img.shields.io/badge/tested-Windows%2011%20%C2%B7%20DSH%200.2.2--rc.1-blue)
+![license: MIT](https://img.shields.io/badge/license-MIT-green)
+
+> [!WARNING]
+> **这是半成品（work in progress），不是拿来即用的成品插件。**
+>
+> - 只在 **Windows 11 + DeepSeek Harness 0.2.2-rc.1** 上实测过；macOS / Linux 完全没测。
+> - **素材不随仓库分发**。clone 下来必须先在本机跑 `scripts\fetch-assets.ps1`，否则背景只是一层纯深空底色（玻璃皮肤仍可用）。
+> - 只移植了上游的 `glass` 一档。`immersive` 沉浸档、HUD 遥测章、四角刻线、启动层动画（13.9 秒四幕电影）**都没搬过来**。
+> - **没有设置页**。改不透明度、舷窗大小、压暗强度只能动 `localStorage` 或直接改 `override.css`（见第三节）。
+> - 依赖两个会变的上游细节：`changed-files` 卡片的 hash 类名、`body[data-ds-dark-theme]` 约定。DSH 或上游插件升级后可能要跟着改。
+> - **没有自动化测试**。验证手段是 CDP 读计算样式 + 人工截图对比，不是 CI。
+> - 只在单屏 2560×1600 / 100%~150% 缩放下看过效果；多显示器、窄窗口、触屏都没验证。
+>
+> 拿它当**一份可读的参考实现**，比当**可以依赖的插件**合适。
+
 DeepSeek Harness 的 **MOSS 550W 双层常驻背景 + 深空玻璃皮肤**插件。
 
 改编自 **[QIFANAI/dsh-startup-moss2](https://github.com/QIFANAI/dsh-startup-moss2)**（MIT）——那个项目做的是 13.9 秒四幕启动电影 + 地球背景皮肤；这个插件把其中的「幕 II MOSS 苏醒」抽出来做成界面常驻背景，并把地球收成右上角的动态舷窗。
@@ -123,6 +140,16 @@ after : headerBg rgb(33,33,35)    + headerColor rgb(233,241,250)   ← 正常
 | `scripts/fetch-assets.ps1` | 从上游 sparse checkout 素材 |
 | `locale/`、`icon.svg` | 插件市场的显示元数据 |
 
-## 七、许可
+## 七、没做的事（想接着做可以看这里）
+
+- **沉浸档**：上游 `skin.css` 里 `--immersive` 那一套（四角刻线、常显扫描线、HUD 遥测章）规则还留在文件里，但本插件只用 `--glass`，那些选择器全程不命中。要做得在 bootstrap 里切 class 并补 HUD 的 DOM 与数据。
+- **设置页**：现在调参靠 `localStorage`，改错了得手敲命令清。正经做法是注册 `settings.section` 的 Client slot（上游 `lib/client.js` 里有完整范例）。
+- **启动动画整合**：启动动画目前是另一套壳外启动器，交接那一刻背景会跳一下。理想是在 13.05s 之前把背景层按 `opacity:0` 埋好，交接瞬间同步淡入。
+- **素材体积**：`earth-1080.mp4` 8.16 MB。可以换上游的 720 版，或转 WebM/AV1 再省一半。
+- **省电**：页面不可见时已暂停地球视频，但 `backdrop-filter` 那几层常驻合成层没做降级，上游的 `saver` 档也没接。
+- **一键关掉**：没有「临时关掉皮肤」的 UI，只能卸插件或清 `localStorage`。
+- **测试**：没有 vitest / playwright。最小可加的验证是「注入复刻卡片 → 断言 headerBg 不是浅色」这类 CDP 断言（本仓库就是这么查出来的）。
+
+## 八、许可
 
 MIT，见 [LICENSE](LICENSE)。上游版权声明（© 2026 QIFANAI）与素材限制都写在 LICENSE 末尾。
