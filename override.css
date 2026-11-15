@@ -1,0 +1,128 @@
+/* ============================================================================
+ * dsh-moss-background — 双层背景扩展（叠加在 moss2 的 glass 皮肤之上）
+ * ----------------------------------------------------------------------------
+ * 层次（由下到上）：
+ *   .ma-moss-still / .ma-moss    MOSS 550W 苏醒镜头（主视觉，慢速漂移）
+ *   .ma-still / .ma-video        地球（氛围叠加层：半透明 + screen 混合 + 右侧遮罩）
+ *   .ma-veil / .ma-vignette      压暗与暗角（沿用 moss2）
+ *   .ma-grain / .ma-scan / .ma-rim  颗粒 / 扫描线 / 底部光晕（沿用 moss2）
+ *
+ * 可调变量（写在 html 上即可覆盖）：
+ *   --mb-moss-opacity   1        MOSS 层不透明度
+ *   --mb-earth-opacity  .40      地球层不透明度
+ *   --mb-earth-blend    screen   地球层混合模式（screen / lighten / normal）
+ *   --mb-earth-x        66%      地球遮罩中心 x
+ *   --mb-earth-y        62%      地球遮罩中心 y
+ * ========================================================================== */
+
+/* ── 1. MOSS 层：垫在最底下，占满整屏，轻微推近漂移 ─────────────────────── */
+html.dsh-moss-skin #dsh-moss-ambient .ma-moss,
+html.dsh-moss-skin #dsh-moss-ambient .ma-moss-still {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* MOSS 的红眼在画面偏左中，44% 让机械臂与红眼都留在视野里 */
+  object-position: 50% 44%;
+  background-color: transparent;
+  opacity: var(--mb-moss-opacity, 1);
+  /* 压暗两档：定格帧的机械臂有大量亮部，压暗后红眼才立得住、玻璃面板才可读 */
+  filter: brightness(var(--mb-moss-brightness, 0.62)) contrast(1.14) saturate(0.92);
+}
+
+html.dsh-moss-skin #dsh-moss-ambient .ma-moss {
+  transform: scale(1.06);
+  transform-origin: 50% 44%;
+  /* 52s 往返：和地球层的 44s 不同周期，两层不会同步「脉动」 */
+  animation: mb-moss-drift 52s ease-in-out infinite alternate;
+  will-change: transform;
+  /* 循环点淡出由 bootstrap 脚本改 inline opacity（见 index.js），这里给过渡 */
+  transition: opacity 420ms linear;
+}
+
+@keyframes mb-moss-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1.06); }
+  100% { transform: translate3d(1.6%, -1.4%, 0) scale(1.14); }
+}
+
+/* 用户显式 calm / 页面隐藏：停装饰性漂移（视频本身照播） */
+html.dsh-moss-skin--calm #dsh-moss-ambient .ma-moss {
+  animation: none;
+  transform: scale(1.10);
+}
+
+/* saver / 静态档：MOSS 不播视频，只留海报 */
+html.dsh-moss-skin--static #dsh-moss-ambient .ma-moss,
+html.dsh-moss-skin[data-moss-quality="saver"] #dsh-moss-ambient .ma-moss {
+  opacity: 0;
+}
+
+/* ── 2. 地球层：右上角的「舷窗」—————————————
+ *    地球素材的圆盘本来就在画面正中，和 MOSS 的红眼撞在一起。
+ *    所以把它收成一个圆形监视窗放到右上角（HUD 舷窗），screen 混合让大气边缘、
+ *    等离子尾迹、城市灯光浮在深空里，同时完全不挡左侧栏与底部输入区。 */
+html.dsh-moss-skin #dsh-moss-ambient .ma-video,
+html.dsh-moss-skin #dsh-moss-ambient .ma-still {
+  inset: 4.6vh 3.2vw auto auto;
+  width: var(--mb-earth-size, 28vw);
+  height: var(--mb-earth-size, 28vw);
+  min-width: 300px;
+  min-height: 300px;
+  max-width: 520px;
+  max-height: 520px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 46%;
+  opacity: var(--mb-earth-opacity, 0.92);
+  mix-blend-mode: var(--mb-earth-blend, screen);
+  filter: brightness(1.28) saturate(1.34) contrast(1.04);
+  /* 干掉 skin.css 的全屏漂移：这个层的定位和尺寸都由本文件接管 */
+  transform: none;
+  animation: none;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 56%, rgba(0, 0, 0, 0.62) 68%, transparent 78%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 56%, rgba(0, 0, 0, 0.62) 68%, transparent 78%);
+}
+
+/* ── 3. 压暗层微调：MOSS 画面比纯星空亮，veil 略加深一档保证正文可读 ─────── */
+html.dsh-moss-skin #dsh-moss-ambient .ma-veil {
+  background-image:
+    radial-gradient(ellipse 112% 88% at 44% 44%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-soft) * 1.28)) 0%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-soft) * 1.08)) 42%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-deep) * 1.06)) 100%),
+    linear-gradient(180deg,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-deep) * 0.98)) 0%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-soft) * 0.60)) 18%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-soft) * 0.44)) 58%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-deep) * 0.78)) 100%);
+}
+
+/* ── 4. 首屏进入：背景层自己淡入，避免「黑一下再亮」 ─────────────────────── */
+html.dsh-moss-enter #dsh-moss-ambient {
+  animation: mb-ambient-in 900ms ease-out both;
+}
+@keyframes mb-ambient-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── 5. 窄窗口：舷窗缩小并往右下让位 ───────────────────────────────────── */
+@media (max-width: 1200px) {
+  html.dsh-moss-skin #dsh-moss-ambient .ma-video,
+  html.dsh-moss-skin #dsh-moss-ambient .ma-still {
+    inset: 6vh 4vw auto auto;
+    width: 36vw;
+    height: 36vw;
+    min-width: 200px;
+    min-height: 200px;
+    opacity: var(--mb-earth-opacity, 0.80);
+  }
+}
+
+/* ── 6. 开关：localStorage 里设 {"hideEarth":true} 可关掉舷窗 ─────────────── */
+html.dsh-moss-bg-no-earth #dsh-moss-ambient .ma-video,
+html.dsh-moss-bg-no-earth #dsh-moss-ambient .ma-still {
+  display: none;
+}

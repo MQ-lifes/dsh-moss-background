@@ -1,0 +1,4 @@
+- insert:
+    - id: dsh-moss-background
+      name: '@local/dsh-moss-background'
+      config: {}

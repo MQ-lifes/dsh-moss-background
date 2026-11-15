@@ -1,0 +1,38 @@
+MIT License
+
+Copyright (c) 2026 MQ-lifes
+  — host routes, first-paint bootstrap, dual-layer background, Earth porthole,
+    glass overrides, localStorage tuning, dark-theme attribute fix
+
+Copyright (c) 2026 QIFANAI (https://github.com/QIFANAI/dsh-startup-moss2)
+  — skin token overrides (skin.css) and the MOSS 550W visual design this plugin
+    is adapted from, distributed under the MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+NOTE ON MEDIA ASSETS
+
+The video and poster assets (assets/earth/*, assets/moss/*) are NOT part of this
+repository and are NOT covered by the MIT grant above. Per the upstream project's
+own manifest, those clips originate from a Wallpaper Engine project and are
+licensed for the upstream author's local use only, without redistribution.
+Run scripts/fetch-assets.ps1 to obtain them from the upstream repository on your
+own machine.

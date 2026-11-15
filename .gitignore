@@ -1,0 +1,11 @@
+# 上游素材不随本仓库分发 —— 见 README「改编来源与素材许可」
+assets/earth/*.mp4
+assets/earth/*.webp
+assets/earth/*.jpg
+assets/moss/*.mp4
+assets/moss/*.webp
+assets/moss/*.jpg
+
+node_modules/
+*.log
+.DS_Store

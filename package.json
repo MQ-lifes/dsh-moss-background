@@ -1,0 +1,41 @@
+{
+  "name": "@local/dsh-moss-background",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "MOSS 550W dual-layer background: the MOSS awakening shot as a persistent UI background, a translucent moving Earth layer on top, plus a deep-space glass skin.",
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "theme",
+    "background",
+    "glass-skin",
+    "moss",
+    "the-wandering-earth"
+  ],
+  "homepage": "https://github.com/MQ-lifes/dsh-moss-background#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MQ-lifes/dsh-moss-background.git"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "skin.css",
+    "override.css",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "assets/**"
+  ],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" }
+  }
+}
